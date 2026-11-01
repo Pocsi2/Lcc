@@ -1,0 +1,9 @@
+# Internal working notes and design plans
+/progress.md
+/docs/superpowers/
+
+# Local editor and operating-system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
