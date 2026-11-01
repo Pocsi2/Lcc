@@ -49,6 +49,19 @@
   });
 
   const film = document.querySelector(".film-frame iframe");
+  const audioGate = document.querySelector(".audio-gate");
+  const audioGateContinue = audioGate?.querySelector(".audio-gate-continue");
+  let filmPlayer = null;
+  let audioAccepted = false;
+  audioGate?.addEventListener("cancel", event => event.preventDefault());
+  audioGateContinue?.addEventListener("click", () => {
+    if (!filmPlayer) return;
+    audioAccepted = true;
+    filmPlayer.setVolume(100);
+    filmPlayer.unMute();
+    filmPlayer.playVideo();
+    audioGate?.close();
+  });
   if (film) {
     const apiScript = document.createElement("script");
     apiScript.src = "https://www.youtube.com/iframe_api";
@@ -62,10 +75,15 @@
       new YT.Player(film, {
         events: {
           onReady: event => {
+            filmPlayer = event.target;
+            if (audioGateContinue) audioGateContinue.disabled = false;
             event.target.unMute();
             event.target.setVolume(100);
             event.target.seekTo(0, true);
             event.target.playVideo();
+          },
+          onAutoplayBlocked: () => {
+            if (!audioAccepted && audioGate && !audioGate.open) audioGate.showModal();
           },
         }
       });
